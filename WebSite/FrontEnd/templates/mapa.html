@@ -1,0 +1,124 @@
+{% extends 'index.html' %}
+
+{% block css_file %}
+<style>
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background-image: url('https://imgs.search.brave.com/L4y_WuxrL4YeneQJ8P3LLr_aFC8sJLLyTpi5GvlIlpo/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC9mMm5ic1BK/LmpwZw');
+        background-repeat: no-repeat;
+        background-size: cover; 
+    }
+    .location-container {
+        background-color: #1a4f77c7;
+        border-radius: 8px;
+        padding: 20px;
+        width: 830px;
+        height: 700px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    .navbar-button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            padding: 0 10px;
+            cursor: pointer;
+            transition: color 0.3s;
+    }
+
+    .navbar-button:hover {
+        color: #76aad1;
+    }
+
+    .navbar-button:focus {
+        outline: none;
+    }
+    .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Adicionado para organizar os elementos */
+        width: 100%;
+        padding: 10px 20px;
+        background-color: rgba(26, 79, 119, 0.8);
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    .navbar-title {
+        color: #fff;
+        font-size: 24px;
+        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        margin: 1;
+        margin-left: auto;
+        margin-right: 22%;
+        font-weight: bold;
+    }
+    .navbar-subtitle {
+        color: #fff;
+        font-size: 18px;
+        margin: 0;
+        font-weight: bold;
+    }
+    .navbar-buttons {
+        display: flex;
+        flex-shrink: 0;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<body>
+<div class="location-container">
+    <div class="navbar">
+        <h2 class="navbar-title">Institutos recomendados com base na sua localização e esportes indicados</h2>
+        <div class="navbar-buttons">
+            <button class="navbar-button" id="navbar-back-button">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <button class="navbar-button" id="navbar-reload-button">
+                <i class="fas fa-sync"></i>
+            </button>
+        </div>
+    </div>
+    <div id="map" style="width: 100%; height: 650px; margin: 20px auto; border-radius: 3px;"></div>
+    <h3 class="navbar-subtitle">Clique nos marcadores para obter informações.</h3>
+</div>
+</body>
+<script>
+        const navbarBackButton = document.getElementById("navbar-back-button");
+        const navbarReloadButton = document.getElementById("navbar-reload-button");
+
+        const mapCenter = {{ center|tojson }};
+        const markerLocations = {{ markers|tojson }};
+
+        const map = L.map('map', {
+            center: mapCenter,
+            zoom: 5,
+            minZoom: 6
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        // Adiciona os pontos ao mapa com popups
+        markerLocations.forEach(location => {
+            L.marker(location.coords).bindPopup(location.description).addTo(map);
+        });
+
+        navbarBackButton.addEventListener("click", () => {
+                window.location.href = "/central";
+            });     
+
+        navbarReloadButton.addEventListener("click", () => {
+                window.location.href = "/mapa";
+        });
+</script>
+{% endblock %}

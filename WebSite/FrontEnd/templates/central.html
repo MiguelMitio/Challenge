@@ -1,0 +1,284 @@
+{% extends 'index.html' %}
+    {% block css_file %}
+        <style>
+            .body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                min-height: 100vh;
+                margin: 0;
+                background-image: url('https://imgs.search.brave.com/L4y_WuxrL4YeneQJ8P3LLr_aFC8sJLLyTpi5GvlIlpo/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC9mMm5ic1BK/LmpwZw');
+                background-repeat: no-repeat;
+                background-size: cover; 
+            }
+            .box:hover {
+                background-color: #4a6d88ee;
+                transition: all 0.5s ease-in-out;
+            }
+            body.page-selected {
+                overflow: hidden;
+            }
+            .navbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between; /* Adicionado para organizar os elementos */
+                width: 100%;
+                padding: 10px 20px;
+                background-color: rgba(26, 79, 119, 0.8);
+                box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 1000;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            .navbar-title {
+                color: #fff;
+                font-size: 24px;
+                font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+                margin: 0;
+                font-weight: bold;
+            }
+            .navbar-subtitle {
+                color: #fff;
+                font-size: 18px;
+                font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+                margin: 0;
+                font-weight: bold;
+            }
+            .navbar-buttons {
+                display: flex;
+                flex-shrink: 0;
+            }
+            .institutos-button {
+                background-color: #6ec5c5; /* Cor de fundo do botão */
+                border: none;
+                color: white; /* Cor do texto */
+                padding: 10px 20px; /* Espaçamento interno do botão */
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+                border-radius: 12px; /* Borda arredondada */
+                font-size: 18px;
+                margin: 0;
+                font-weight: bold;
+            }
+            .institutos-button:hover {
+                background-color: #76aad1;
+            }
+            .navbar-button {
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 24px;
+                padding: 0 10px;
+                cursor: pointer;
+                transition: color 0.3s;
+            }
+
+            .navbar-button:hover {
+                color: #76aad1;
+            }
+
+            .navbar-button:focus {
+                outline: none;
+            }
+            .container {
+                display: flex;
+                justify-content: space-between;
+                align-items: stretch;
+                flex-wrap: wrap;
+                max-width: 1200px;
+                width: 100%;
+                padding: 0px;
+                box-sizing: border-box;
+                margin-top: 100px; 
+            }
+            .box {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: calc(50% - 40px);
+                background-color: #1a4f77c7;
+                color: white;
+                font-size: 24px;
+                margin: 20px;
+                border-radius: 10px;
+                padding: 40px;
+                box-sizing: border-box;
+                transition: all 0.5s ease-in-out;
+                box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+                overflow: hidden;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Adicionado sombreamento */
+            }
+            .box h1{
+                font-size: 35px;
+                font-weight: bold;
+                margin: 0;
+                color: #ffffff;
+            }
+            .box p {
+                max-width: 90%;
+                word-wrap: break-word;
+                color: #ffffff;
+            }
+            .box-selected {
+                background-color: #1a4f77c7;
+                transition: all 2s ease-in-out;
+                transform: scale(1.1);
+                z-index: 100;
+                align-items: center;
+                justify-content: center;
+                position: fixed;
+                top: 12%;
+                left: 25%;
+                right: 25%;
+                width: 50%;
+                height: 80%;
+                box-shadow: coral;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* Adicionado sombreamento */
+            }
+            .box-fade-out {
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.5s ease-in-out;
+            }
+            .back-button {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background-color: rgba(26, 79, 119, 0.8);
+                color: #fff;
+                font-size: 24px;
+                border: none;
+                cursor: pointer;
+                padding: 5px 10px;
+                border-radius: 5px;
+                display: none;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Adicionado sombreamento */
+            }
+            .back-button:hover, .back-button:focus {
+                background: #76aad187;
+                transform: translateY(-4px);
+            }
+            .back-button:active {
+                transform: translateY(2px);
+                box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.2);
+            }
+            .gif {
+                width: 350px;
+                height: 350px;
+                object-fit: cover;
+                border-radius: 3px;
+            }
+            .description {
+                display: none;
+            }
+            .box-selected .description {
+                display: block;
+            }
+            .box-selected .gif {
+                width : 60%;
+                height: 60%;
+                object-fit: cover;
+                border-radius: 3px;
+            }
+        </style>    
+    {% endblock %}
+    {% block content %}
+    <body class="body">
+        <div class="navbar">
+            <h2 class="navbar-title">Projeto 2023</h2>
+            <button class="institutos-button">Institutos</button>
+            <div class="navbar-buttons">
+                <button class="navbar-button" id="navbar-back-button">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button class="navbar-button" id="navbar-reload-button">
+                    <i class="fas fa-sync"></i>
+                </button>
+            </div>
+        </div>
+        <div class="container">
+            {% for sport in resultado %}
+                <div class="box">
+                    <button class="back-button" id="back-button">Voltar</button>
+                    <h1>{{ sport.name }} {{ sport.aptitude }}</h1>
+                    <br>
+                    <img class = "gif" src = "/static/{{sport.name}}.gif"></img>
+                    <p class="description">{{ sport.description }}</p>
+                    <p class="hide_text"></p>
+                </div>
+            {% endfor %}
+        </div>
+        <script>
+            const body = document.querySelector("body");
+            const boxes = document.querySelectorAll(".box");
+            const backButtons = document.querySelectorAll(".back-button");
+            const gif = document.querySelectorAll(".gif");
+            const navbarBackButton = document.querySelector("#navbar-back-button");
+            const navbarReloadButton = document.querySelector("#navbar-reload-button");
+            const navbarInstitutosButton = document.querySelector(".institutos-button");
+            const mapElement = document.getElementById("map");
+
+            boxes.forEach(box => {
+                box.addEventListener("click", () => {
+                    if (box.classList.contains("box-selected")) {
+                        return
+                    }
+                    else{
+                        body.classList.add("page-selected");
+
+                        box.classList.add("box-selected");
+                        box.classList.add("box-selected");      
+
+                        const backButton = box.querySelector('.back-button');
+                        
+                        backButton.style.display = 'block';   
+
+                        for (let i = 0; i < boxes.length; i++) {
+                            if (boxes[i] != box) {
+                                boxes[i].classList.add("box-fade-out");
+                            }
+                        }
+                        const centerX = window.innerWidth / 2 - box.clientWidth / 2;
+                        const centerY = window.innerHeight / 2 - box.clientHeight / 2;
+                        const rect = box.getBoundingClientRect();
+                    }
+                });
+        });   
+            backButtons.forEach(backButton => {
+                backButton.addEventListener("click", () => {
+                    event.stopPropagation();
+                    body.classList.remove("page-selected");
+                    const box = backButton.parentNode;
+                    box.classList.remove("box-selected");
+                    backButton.style.display = 'none';
+                    for (let i = 0; i < boxes.length; i++) {
+                        if (boxes[i] != box) {
+                            boxes[i].classList.remove("box-fade-out");
+                        }
+                    }                     
+                });
+            }); 
+
+            navbarBackButton.addEventListener("click", () => {
+                window.location.href = "/";
+            });     
+
+            navbarReloadButton.addEventListener("click", () => {
+                window.location.href = "/central";
+            });
+
+            navbarInstitutosButton.addEventListener("click", () => {
+                window.location.href = "/institutos";
+            });
+
+        </script>
+    </body>
+    {% endblock %}
+

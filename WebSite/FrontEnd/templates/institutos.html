@@ -1,0 +1,144 @@
+{% extends 'index.html' %}
+
+{% block css_file %}
+<style>
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background-image: url('https://imgs.search.brave.com/L4y_WuxrL4YeneQJ8P3LLr_aFC8sJLLyTpi5GvlIlpo/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC9mMm5ic1BK/LmpwZw');
+        background-repeat: no-repeat;
+        background-size: cover; 
+    }
+    .h2 {
+            color: #fff;
+            font-size: 18px;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            margin: 0;
+        }
+    
+    .button {
+        padding: 16px 32px;
+        font-size: 20px;
+        border: none;
+        color: #ffffff;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+    .button-container button {
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+
+    .button-container button:hover {
+            background-color: #45a049;
+        }
+    .location-container {
+        background-color: #1a4f77c7;
+        border-radius: 8px;
+        padding: 20px;
+        width: 400px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .location-container select {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<body>
+<div class="location-container">
+    <form action="/state" method="GET">
+        <div>
+            <label for="state" class="h2">Estado:</label>
+            <select name="state" id="state">
+                <!-- As opções de estados vão aqui -->
+            </select>
+        </div>
+        <div>
+            <label for="city" class="h2">Cidade:</label>
+            <select name="city" id="city">
+                <!-- As opções de cidades vão aqui -->
+            </select>
+        </div>
+        <div class="button-container">
+            <button type="submit">Avançar</button>
+        </div>
+    </form>
+</div>
+</body>
+<script>
+    // Dados de exemplo de estados e cidades
+    const statesAndCities = {
+        'São Paulo': ['São Paulo', 'Campinas', 'Santos'],
+        'Rio de Janeiro': ['Rio de Janeiro', 'Niterói', 'Campos dos Goytacazes'],
+        'Minas Gerais': ['Belo Horizonte', 'Juiz de Fora', 'Uberlândia'],
+        // ... [você pode adicionar mais estados e cidades conforme necessário] ...
+    }
+
+    const stateSelect = document.getElementById('state');
+    const citySelect = document.getElementById('city');
+
+    // Função para preencher estados
+    function populateStates() {
+        for (const state in statesAndCities) {
+            const option = document.createElement('option');
+            option.value = state;
+            option.textContent = state;
+            stateSelect.appendChild(option);
+        }
+    }
+
+    // Função para preencher cidades com base no estado selecionado
+    function populateCities() {
+        const selectedState = stateSelect.value;
+
+        // Limpar cidades existentes
+        citySelect.innerHTML = '';
+
+        // Preencher com cidades do estado selecionado
+        const cities = statesAndCities[selectedState];
+        for (const city of cities) {
+            const option = document.createElement('option');
+            option.value = city;
+            option.textContent = city;
+            citySelect.appendChild(option);
+        }
+    }
+
+    // Evento para atualizar cidades quando um novo estado for selecionado
+    stateSelect.addEventListener('change', populateCities);
+
+    // Preencher os estados e cidades iniciais ao carregar a página
+    window.addEventListener('DOMContentLoaded', (event) => {
+        populateStates();
+        populateCities();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,314 @@
+{% extends 'index.html' %}
+{% block css_file %}
+    <style>
+        body {
+            background-color: #f2f2f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            margin: 0;
+            background-image: url('https://imgs.search.brave.com/L4y_WuxrL4YeneQJ8P3LLr_aFC8sJLLyTpi5GvlIlpo/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC9mMm5ic1BK/LmpwZw');
+            background-repeat: no-repeat;
+            background-size: cover; 
+        }
+
+        .container {
+            background-color: #1a4f77c7;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            max-width: 400px;
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 18px;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            margin: 0;
+        }
+
+        #deficiencies-container {
+            margin-bottom: 20px;
+        }
+
+        .deficiency-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .deficiency-row select {
+            flex: 1;
+            padding: 10px;
+        }
+
+        .deficiency-row button {
+            background-color: transparent;
+            border: none;
+            color: #333;
+            cursor: pointer;
+            font-size: 20px;
+            margin-left: 10px;
+            outline: none;
+        }
+
+        .deficiency-row button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .button-container button {
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+
+        .button-container button:hover {
+            background-color: #45a049;
+        }
+
+        .button-container #add-deficiency {
+            background-color: #333;
+            flex: 1;
+            margin-right: 10px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<body>
+    <div class="container">
+        <h2>Selecione as deficiências</h2>
+        <br>
+        <form id="deficiencies-form">
+            <div id="deficiencies-container">
+                <div class="deficiency-row">
+                    <select name="deficiency" required>
+                        <option value="">Selecione...</option>
+                        <option value="1">Deficiência Visual</option>
+                        <option value="2">Deficiência Auditiva</option>
+                        <option value="3">Deficiência Física</option>
+                        <option value="4">Deficiência Intelectual</option>
+                        <option value="5">Deficiência Cerebral</option>
+                    </select>
+                    <select class="secondary" name="sub_deficiency" style="display: none;">
+                        <!-- Serão preenchidos dinamicamente com base na seleção primária -->
+                    </select>
+                    <button class="remove-deficiency" type="button" disabled>&times;</button>
+                </div>
+            </div>
+            <div class="button-container">
+                <button id="add-deficiency" type="button">Adicionar Deficiência</button>
+                <button type="submit" formmethod="POST" formaction="/verificar" >Avançar</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+        // Selecionando os elementos do DOM necessários
+        var addDeficiencyButton = document.getElementById("add-deficiency");
+        var deficienciesContainer = document.getElementById("deficiencies-container");
+        var submitButton = document.querySelector("button[type=submit]");
+        var initialMainDeficiencySelect = document.querySelector("select[name='deficiency']");
+        var initialSecondaryDeficiencySelect = document.querySelector("select[name='sub_deficiency']");
+        initialMainDeficiencySelect.addEventListener('change', function() {
+            populateSecondaryOptions(initialMainDeficiencySelect.value, initialSecondaryDeficiencySelect);
+        });
+
+        // Adicionando um listener de evento ao botão "Adicionar Deficiência"
+        addDeficiencyButton.addEventListener("click", function() {
+            // Verificando se ainda há espaço para adicionar mais campos de deficiência
+            if (deficienciesContainer.childElementCount < 2) {
+                var deficiencyRow = createDeficiencyRow();
+                deficienciesContainer.appendChild(deficiencyRow);
+                updateRemoveButtons();
+            }
+        });
+
+        // Função para atualizar o estado dos botões de remoção
+        function updateRemoveButtons() {
+            var removeButtons = document.querySelectorAll(".remove-deficiency");
+            removeButtons.forEach(function(button) {
+                button.disabled = (deficienciesContainer.childElementCount <= 1);
+            });
+        }
+
+        // Função para criar uma nova linha de deficiência
+        function createDeficiencyRow() {
+            var deficiencyRow = document.createElement("div");
+            deficiencyRow.classList.add("deficiency-row");
+
+            var mainDeficiencySelect = createMainDeficiencySelect();
+            deficiencyRow.appendChild(mainDeficiencySelect);
+
+            var secondaryDeficiencySelect = createSecondaryDeficiencySelect();
+            deficiencyRow.appendChild(secondaryDeficiencySelect);
+
+            var removeButton = document.createElement("button");
+            removeButton.classList.add("remove-deficiency");
+            removeButton.type = "button";
+            removeButton.innerHTML = "&times;";
+            removeButton.addEventListener("click", function() {
+                deficienciesContainer.removeChild(deficiencyRow);
+                updateRemoveButtons();
+            });
+            deficiencyRow.appendChild(removeButton);
+
+            mainDeficiencySelect.addEventListener('change', function() {
+                populateSecondaryOptions(mainDeficiencySelect.value, secondaryDeficiencySelect);
+            });
+
+            return deficiencyRow;
+        }
+
+        // Função para criar o select da deficiência principal
+        function createMainDeficiencySelect() {
+            var selectElement = document.createElement("select");
+            selectElement.name = "deficiency";
+            selectElement.required = true;
+
+            var options = [
+                { value: "", text: "Selecione..." },
+                { value: "1", text: "Deficiência Visual" },
+                { value: "2", text: "Deficiência Auditiva" },
+                { value: "3", text: "Deficiência Física" },
+                { value: "4", text: "Deficiência Intelectual" },
+                { value: "5", text: "Deficiência Cerebral" }
+            ];
+
+            options.forEach(function(optionData) {
+                var optionElement = document.createElement("option");
+                optionElement.value = optionData.value;
+                optionElement.textContent = optionData.text;
+                selectElement.appendChild(optionElement);
+            });
+
+            return selectElement;
+        }
+
+        // Função para criar o select da sub-deficiência
+        function createSecondaryDeficiencySelect() {
+            var selectElement = document.createElement("select");
+            selectElement.name = "sub_deficiency";
+            selectElement.required = true;
+            selectElement.style.display = "none";
+            selectElement.classList.add("secondary");
+            return selectElement;
+        }
+
+       // Função para popular as opções do select secundário
+       function populateSecondaryOptions(value, selectElement) {
+            while (selectElement.firstChild) {
+                selectElement.removeChild(selectElement.firstChild);
+            }
+
+            var optionDataList = [];
+
+            switch(value) {
+                case "1":
+                    optionDataList = [
+                        { value: "", text: "Selecione..." },
+                        { value: "1", text: "Baixa Visão" },
+                        { value: "2", text: "Cegueira Legal" },
+                        { value: "3", text: "Degeneração Macular" },
+                        // ... outros valores ...
+                    ];
+                    selectElement.style.display = "inline-block";
+                    break;
+                case "2":
+                    optionDataList = [
+                        { value: "", text: "Selecione..." },
+                        { value: "1", text: "Surdez Leve" },
+                        { value: "2", text: "Surdez Moderada" },
+                        { value: "3", text: "Surdez Severa" }
+                        // ... outros valores ...
+                    ];
+                    selectElement.style.display = "inline-block";
+                    break;
+                case "3":
+                    optionDataList = [
+                        { value: "", text: "Selecione..." },
+                        { value: "1", text: "Amputação Transfemoral" },
+                        { value: "2", text: "Amputação Transtibial" },
+                        { value: "3", text: "Amputação Transradial" },
+                        { value: "4", text: "Distrofia Muscular" },
+                        { value: "5", text: "Desarticulação do Quadril" },
+                        { value: "6", text: "Desarticulação do Ombro" }
+                    ];
+                    selectElement.style.display = "inline-block";
+                    break;
+                case "4":
+                    optionDataList = [
+                        { value: "", text: "Selecione..." },
+                        { value: "1", text: "Síndrome de Down" },
+                        { value: "2", text: "Síndrome do X Frágil" },
+                        { value: "3", text: "Síndrome de Prader-Willi" }
+                    ];
+                    selectElement.style.display = "inline-block";
+                    break;
+                case "5":
+                    optionDataList = [
+                        { value: "", text: "Selecione..." },
+                        { value: "1", text: "Paralisia Cerebral" },
+                        { value: "2", text: "Doenças Neurodegenerativas" },
+                        { value: "3", text: "Alzheimer" },
+                        { value: "4", text: "Parkinson" },
+                        { value: "5", text: "ELA" }
+                    ];
+                    selectElement.style.display = "inline-block";
+                    break;
+                // outros casos podem ser adicionados aqui
+                default:
+                    selectElement.style.display = "none";
+            }
+
+            optionDataList.forEach(function(optionData) {
+                var optionElement = document.createElement("option");
+                optionElement.value = optionData.value;
+                optionElement.textContent = optionData.text;
+                selectElement.appendChild(optionElement);
+            });
+        }
+
+        submitButton.addEventListener("click", function(event) {
+            var selects = document.querySelectorAll("select[name='deficiency']");
+            var selectedValues = new Set();
+            var hiddenSubDeficiencySelects = document.querySelectorAll("select[name='sub_deficiency'][style='display: none;']");
+            hiddenSubDeficiencySelects.forEach(function(select) {
+                select.removeAttribute('required');
+            });
+
+            for (var i = 0; i < selects.length; i++) {
+                var select = selects[i];
+                var selectedValue = select.value;
+
+                if (selectedValues.has(selectedValue)) {
+                    select.setCustomValidity("Você não pode selecionar a mesma deficiência mais de uma vez.");
+                    select.reportValidity();
+                    event.preventDefault();
+                    return;
+                } else {
+                    selectedValues.add(selectedValue);
+                    select.setCustomValidity("");
+                }
+            }
+        });
+        });
+
+    </script>
+</body>
+{% endblock %}
+
