@@ -60,7 +60,7 @@ def mapa():
 
     markerLocations = [
     {"coords": [-23.550520, -46.633308], 
-     "description": "<h3 style='font-size: 1.5em; font-weight: bold;'>Academia para tênis de mesa</h3><p>Email: exemplo@academia.com</p>Rua:Rua Santa Teresa, 187<p>Contato: (11) 1234-5678</p>"},
+     "description": "<h3 style='font-size: 1.5em; font-weight: bold;'>Academia para tênis de mesa</h3><p>Email: exemplo@academia.com</p>Rua:Santa Teresa, 187<p>Contato: (11) 1234-5678</p>"},
     {"coords": [-22.906847, -43.172896], 
      "description": "<h3 style='font-size: 1.5em; font-weight: bold;'>Ginásio de Judô</h3><p>Email: judo@ginasio.com</p><p>Rua:Av. Pres. Antônio Carlos, 100<p>Contato: (21) 9876-5432</p>"}]
 
