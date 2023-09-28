@@ -2,6 +2,7 @@ from flask import Flask
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
+from flask_cors import CORS
 
 app = Flask(__name__)
 

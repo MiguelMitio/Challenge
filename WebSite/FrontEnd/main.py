@@ -4,7 +4,7 @@ import pandas as pd
 import json
 import random as rd
 import uuid
-
+from flask_cors import CORS
 app = Flask(__name__)
 
 # Chave secreta para o Flask trabalhar com sessões
@@ -85,7 +85,7 @@ def verificar():
     session['deficiencies'] = deficiency
 
     try:
-        req = requests.get('http://localhost:3000/getResult/' + '/'.join(map(str, deficiency)))
+        req = requests.get('https://backendcds.azurewebsites.net/' + '/'.join(map(str, deficiency)))
         req.raise_for_status()  # Raises an exception for 4xx and 5xx status codes
 
         global result
