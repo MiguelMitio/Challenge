@@ -127,6 +127,7 @@ def set_state():
     return redirect(url_for('mapa'))
 
     
+CORS(app, resources={r"/*": {"origins": "frontendcds.azurewebsites.net"}})
 
 # Botão iniciar do sobre 
 @app.route('/iniciar', methods=['GET'])
